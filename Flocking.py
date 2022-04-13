@@ -14,7 +14,7 @@ import agent
 import group
 import pygame
 
-AGENT_COUNT = 4
+AGENT_COUNT = 1
 FPS = 40
 SCREEN_SIZE = 1000
 GOAL = [100, 400]

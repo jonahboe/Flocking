@@ -1,7 +1,7 @@
 import math
 
 class Group:
-    def __init__(self, pg, screen, agents, followdistance=1, goalx=1000, goaly=1000, maxspeed=2, avoidance=0.1):
+    def __init__(self, pg, screen, agents, followdistance=1, goalx=0, goaly=0, maxspeed=5, avoidance=0.1):
         self.agents = pg.sprite.Group(agents)
         self.screen = screen
         self.followDistance = followdistance  # sets how close this agent should follow its leader
