@@ -1,8 +1,9 @@
 import math
 
 class Group:
-    def __init__(self, agents, followdistance=1, goalx=1, goaly=1, maxspeed=2, avoidance=0.1):
-        self.agents = agents
+    def __init__(self, pg, screen, agents, followdistance=1, goalx=1000, goaly=1000, maxspeed=2, avoidance=0.1):
+        self.agents = pg.sprite.Group(agents)
+        self.screen = screen
         self.followDistance = followdistance  # sets how close this agent should follow its leader
         self.goalx = goalx  # sets what the goal location is
         self.goaly = goaly  # sets what the goal location is
@@ -40,5 +41,6 @@ class Group:
                 distance = math.sqrt((self.goalx - agent.x) ** 2 + (self.goaly - agent.y) ** 2)
                 convergentSpeed = 1 - math.exp(-((distance - self.followDistance) ** 2) / (convergenceConst ** 2))
                 agent.speed = convergentSpeed
-        for agent in self.agents:
-            agent.move()  # have agent update
+
+        self.agents.update()  # have agents update
+        self.agents.draw(self.screen)
