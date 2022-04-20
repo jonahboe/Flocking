@@ -1,16 +1,18 @@
 import math
 import pygame
+import random
 
 class Agent(pygame.sprite.Sprite):
     def __init__(self, pg, screen, id, locx=0, locy=0, leaderflag=False, orientation=0, speed=1, leader=None, sight=5, *groups):
         # Initialize our agent as an image
+        color = (random.randint(0,200),random.randint(0,200),random.randint(0,200))
         self.pg = pg
         self.screen = screen
         super().__init__(*groups)
-        self.image = pg.Surface((50, 30), pg.SRCALPHA)
-        pg.draw.polygon(self.image, pg.Color((255, 0, 0)), ((0, 0), (50, 15), (0, 30)))
+        self.image = pg.Surface((30, 10), pg.SRCALPHA)
+        pg.draw.polygon(self.image, pg.Color(color), ((0, 0), (50, 15), (0, 30)))
         self.orig_image = self.image
-        self.rect = self.image.get_rect(center=(25, 15))
+        self.rect = self.image.get_rect(center=(15, 5))
 
         # Take care of the main stuff
         self.id = id

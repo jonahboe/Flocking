@@ -14,10 +14,10 @@ import agent
 import group
 import pygame
 
-AGENT_COUNT = 1
+AGENT_COUNT = 20
 FPS = 40
 SCREEN_SIZE = 1000
-GOAL = [100, 400]
+GOAL = [400, 400]
 
 WHITE = (255, 255, 255)
 RED = (255, 0, 0)
@@ -33,10 +33,10 @@ pygame.display.set_caption('Flocking')
 agents = []
 for i in range(AGENT_COUNT):
     if i == 0:
-        agents.append(agent.Agent(pg=pygame, screen=screen, id=i, leaderflag=True))
+        agents.append(agent.Agent(pg=pygame, screen=screen, id=i, leaderflag=True, locx=400, locy=200))
     else:
-        agents.append(agent.Agent(pg=pygame, screen=screen, id=i, leader=agents[0], locx=i, sight=50))
-squad = group.Group(pg=pygame, screen=screen, agents=agents, goalx=GOAL[0], goaly=GOAL[1], avoidance=.2)
+        agents.append(agent.Agent(pg=pygame, screen=screen, id=i, leader=agents[0], locx=(i*20+200), locy=(i*20+200), sight=500))
+squad = group.Group(pg=pygame, screen=screen, agents=agents, goalx=GOAL[0], goaly=GOAL[1], avoidance=.5, avoiddistance=10, followdistance=10, maxspeed=2, maxturnspeed=5)
 
 x = 0
 running = True
@@ -45,8 +45,8 @@ while running:
     screen.fill(WHITE)
 
     squad.update()
-    for agent in agents:
-        print(agent.id, "-----> Xpos:", agent.x, "Ypos:", agent.y, "Orientation:", agent.orientation, "Speed:", agent.speed)
+    # for agent in agents:
+    #      print(agent.id, "-----> Xpos:", agent.x, "Ypos:", agent.y, "Orientation:", agent.orientation, "Speed:", agent.speed)
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
