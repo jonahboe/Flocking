@@ -1,4 +1,5 @@
 import math
+import random
 
 class Group:
     def __init__(self, pg, screen, agents, followdistance=1, goalx=0, goaly=0, maxspeed=5, avoidance=0.15, avoiddistance=10, maxturnspeed=15):
@@ -75,6 +76,10 @@ class Group:
                 distance = math.sqrt((self.goalx - agent.x) ** 2 + (self.goaly - agent.y) ** 2)
                 convergentSpeed = 1 - math.exp(-((distance - self.followDistance) ** 2) / (convergenceConst ** 2))
                 agent.speed = convergentSpeed
+                # If we have reached our goal, then generate a new one
+                if distance < 15:
+                    self.goalx = random.randint(0, 1000)
+                    self.goaly = random.randint(0, 1000)
 
         self.agents.update()  # have agents update
         self.agents.draw(self.screen)
