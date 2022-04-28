@@ -83,3 +83,24 @@ class Group:
 
         self.agents.update()  # have agents update
         self.agents.draw(self.screen)
+
+    def vote(self, voting):
+        for agent in self.agents:
+            if agent.leader is None:
+                agentList = [agent]
+                voteList = [agent.id]
+                for neighbor in self.agents:
+                    if neighbor is not agent:
+                        dx = abs(agent.x - neighbor.x)
+                        dy = abs(agent.y - neighbor.y)
+                        if math.sqrt(dx + dy) < agent.sight:
+                            agentList.append(neighbor)
+                            voteList.append(neighbor.id)
+                for agent in agentList:
+                    agent.votes = voteList
+                leader = voting.process(agentList)
+                for agent in agentList:
+                    agent.leader = leader
+                    if agent.id == leader:
+                        agent.leaderFlag = True
+

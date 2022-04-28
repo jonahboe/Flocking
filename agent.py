@@ -24,6 +24,9 @@ class Agent(pygame.sprite.Sprite):
         self.leader = leader  # sets this agents leader
         self.sight = sight  # sets how far the agent can see
 
+        # For voting
+        self.votes = None
+
     def update(self):  # assumes 1 sec has passed since last move
         rad = (self.orientation / 180) * math.pi  # convert orientation into radians
         self.x = self.x + math.cos(rad) * self.speed  # update x position

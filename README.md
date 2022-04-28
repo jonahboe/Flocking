@@ -9,4 +9,14 @@ effects that the different voting mechanisms effect the resulting leaders
 attributes.
 
 ## Commands
-
+Run with default settings:
+```commandline
+python Flocking.py
+```
+Arguments:
+```commandline
+-v (b, p, v) # Set voting mechanism 
+             # b: Borda (default)
+             # p: Plurality with elimination
+             # v: Veto with elimination (of most least voted for)
+```

@@ -11,7 +11,7 @@ class Voting:
 # Algorythm for Borda voting
 class Borda(Voting):
     def process(self, agents):
-        Voting.process(self, agents)
+        super().process(agents)
         rankings = dict()
         for agent in agents:
             points = len(agent.votes)
@@ -35,9 +35,9 @@ class Borda(Voting):
 
 
 # Algorythm for Plurality with Elimination voting
-class Plurality:
+class Plurality(Voting):
     def process(self, agents):
-        Voting.process(self, agents)
+        super().process(agents)
         rankings = dict()
         for vote in agents[0].votes:
             rankings[vote] = 0
@@ -58,9 +58,9 @@ class Plurality:
 
 
 # Algorythm for Veto with Elimination voting
-class Veto:
+class Veto(Voting):
     def process(self, agents):
-        Voting.process(self, agents)
+        super().process(agents)
         rankings = dict()
         for vote in agents[0].votes:
             rankings[vote] = 0
