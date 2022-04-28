@@ -2,8 +2,10 @@ import math
 import pygame
 import random
 
+
 class Agent(pygame.sprite.Sprite):
-    def __init__(self, pg, screen, id, locx=0, locy=0, leaderflag=False, orientation=0, speed=1, leader=None, sight=5, *groups):
+    def __init__(self, pg, screen, id, locx=0, locy=0, leaderflag=False, orientation=0, speed=1, leader=None, sight=5,
+                 *groups):
         # Initialize our agent as an image
         color = (random.randint(0, 200), random.randint(0, 200), random.randint(0, 200))
         self.pg = pg
@@ -24,13 +26,19 @@ class Agent(pygame.sprite.Sprite):
         self.leader = leader  # sets this agents leader
         self.sight = sight  # sets how far the agent can see
 
-        # For voting
-        self.votes = None
-
-    def update(self):  # assumes 1 sec has passed since last move
+    def update(self, display=True):  # assumes 1 sec has passed since last move
         rad = (self.orientation / 180) * math.pi  # convert orientation into radians
         self.x = self.x + math.cos(rad) * self.speed  # update x position
+        if self.x < 0:
+            self.x += 1000
+        if self.x > 1000:
+            self.x -= 1000
+
         self.y = self.y + math.sin(rad) * self.speed  # update y position
+        if self.y < 0:
+            self.y += 1000
+        if self.y > 1000:
+            self.y -= 1000
 
         self.rect.center = (self.x, self.y)
         self.image = self.pg.transform.rotate(self.orig_image, (self.orientation * -1))

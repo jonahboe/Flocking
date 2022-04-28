@@ -1,8 +1,11 @@
 import math
 import random
+from voting import *
+
 
 class Group:
-    def __init__(self, pg, screen, agents, followdistance=1, goalx=0, goaly=0, maxspeed=5, avoidance=0.15, avoiddistance=10, maxturnspeed=15):
+    def __init__(self, pg, screen, agents, followdistance=1, goalx=0, goaly=0, maxspeed=5, avoidance=0.15,
+                 avoiddistance=10, maxturnspeed=15):
         self.agents = pg.sprite.Group(agents)
         self.screen = screen
         self.followDistance = followdistance  # sets how close this agent should follow its leader
@@ -13,7 +16,8 @@ class Group:
         self.maxTurnSpeed = maxturnspeed  # sets how fast an agent can turn in degress
         self.avoidDistance = avoiddistance
 
-    def update(self):
+    # Update the agents
+    def update(self, display):
         convergenceConst = 1
         for agent in self.agents:
             if not agent.leaderFlag:  # check to see if leader the agent is a leader
@@ -21,10 +25,11 @@ class Group:
                 tempy = 0
                 if agent.leader is not None:
                     for otherAgent in self.agents:
-                        if agent.leader is not otherAgent:
+                        if agent.leader is not otherAgent.id:
                             dis = math.sqrt((otherAgent.x - agent.x) ** 2 + (otherAgent.y - agent.y) ** 2)
-                            if dis < self.avoidDistance:  # if an other agent is too close
-                                tempx = tempx + (-otherAgent.x + agent.x) * self.avoidance  # add a vector with a magnitude based on how close the agent is
+                            if dis < self.avoidDistance:  # if another agent is too close
+                                tempx = tempx + (
+                                            -otherAgent.x + agent.x) * self.avoidance  # add a vector with a magnitude based on how close the agent is
                                 tempy = tempy + (-otherAgent.y + agent.y) * self.avoidance
                         else:
                             dis = math.sqrt((otherAgent.x - agent.x) ** 2 + (otherAgent.y - agent.y) ** 2)
@@ -33,11 +38,12 @@ class Group:
                                 tempy = tempy + (otherAgent.y - agent.y)
                             else:
                                 agent.leader = None
-                                print("Agent",agent.id,"has lost sight of its leader")
+                                print("Agent", agent.id, "has lost sight of its leader")
                                 self.agents.update()  # have agents update
                                 self.agents.draw(self.screen)
                                 return
-                    distanceFromLeader = math.sqrt((tempx) ** 2 + (tempy) ** 2)  # calculate the distance the agent is from its leaders
+                    distanceFromLeader = math.sqrt(
+                        (tempx) ** 2 + (tempy) ** 2)  # calculate the distance the agent is from its leaders
                     if distanceFromLeader - self.followDistance < 0:
                         convergentSpeed = 0
                     else:
@@ -81,26 +87,75 @@ class Group:
                     self.goalx = random.randint(0, 1000)
                     self.goaly = random.randint(0, 1000)
 
-        self.agents.update()  # have agents update
-        self.agents.draw(self.screen)
+        for agent in self.agents:
+            agent.update(display)  # have agents update
+        if display:
+            self.agents.draw(self.screen)
 
-    def vote(self, voting):
+    # Execute voting if needed
+    def vote(self, vm, data, display):
+        voting = Voting()
+
+        # If there is an agent without a leader
         for agent in self.agents:
             if agent.leader is None:
                 agentList = [agent]
-                voteList = [agent.id]
+                agentListCopy = [ag(id=agent.id, votes=[], x=agent.x, y=agent.y)]
+
+                # Ask all visible neighbors to cast a vote
                 for neighbor in self.agents:
-                    if neighbor is not agent:
+                    if agent is not neighbor and neighbor.leaderFlag is False:
                         dx = abs(agent.x - neighbor.x)
                         dy = abs(agent.y - neighbor.y)
                         if math.sqrt(dx + dy) < agent.sight:
                             agentList.append(neighbor)
-                            voteList.append(neighbor.id)
-                for agent in agentList:
-                    agent.votes = voteList
-                leader = voting.process(agentList)
-                for agent in agentList:
-                    agent.leader = leader
-                    if agent.id == leader:
-                        agent.leaderFlag = True
+                            agentListCopy.append(ag(id=neighbor.id, votes=[], x=neighbor.x, y=neighbor.y))
 
+                # Determine the order of each agent's vote
+                for a in agentListCopy:
+                    votes = dict()
+                    for n in agentListCopy:
+                        if n is not a:
+                            dx = abs(a.x - n.x)
+                            dy = abs(a.y - n.y)
+                            votes[n.id] = math.sqrt(dx + dy)
+                    votes = dict(sorted(votes.items(), key=operator.itemgetter(1)))
+                    a.votes = list(votes.keys())
+
+                # Find the new leader
+                leader = None
+                if display:
+                    if vm == BORDA:
+                        leader = voting.borda(agentListCopy)
+                        data[BORDA].append(leader)
+                    elif vm == PLURALITY:
+                        leader = voting.plurality(agentListCopy)
+                        data[PLURALITY].append(leader)
+                    elif vm == VETO:
+                        leader = voting.veto(agentListCopy)
+                        data[VETO].append(leader)
+
+                else:
+                    if vm == BORDA:
+                        leader = voting.borda(copy.deepcopy(agentListCopy))
+                        data[BORDA].append(leader)
+                        data[PLURALITY].append(voting.plurality(copy.deepcopy(agentListCopy)))
+                        data[VETO].append(voting.veto(copy.deepcopy(agentListCopy)))
+                    elif vm == PLURALITY:
+                        leader = voting.plurality(copy.deepcopy(agentListCopy))
+                        data[BORDA].append(voting.borda(copy.deepcopy(agentListCopy)))
+                        data[PLURALITY].append(leader)
+                        data[VETO].append(voting.veto(copy.deepcopy(agentListCopy)))
+                    elif vm == VETO:
+                        leader = voting.veto(copy.deepcopy(agentListCopy))
+                        data[BORDA].append(voting.borda(copy.deepcopy(agentListCopy)))
+                        data[PLURALITY].append(voting.plurality(copy.deepcopy(agentListCopy)))
+                        data[VETO].append(leader)
+
+                # Assign the new leader
+                for a in agentList:
+                    a.leader = leader
+                    if a.id == leader:
+                        a.leaderFlag = True
+                    else:
+                        a.leaderFlag = False
