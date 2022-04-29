@@ -1,5 +1,6 @@
 # Final Project - Flocking
 By: Jonah Boe, Rhett Redd, Matthew Shaw
+
 For: CS 5110 - Utah State University
 
 ## Outline
@@ -9,6 +10,7 @@ effects that the different voting mechanisms effect the resulting leaders
 attributes.
 
 ## Commands
+### Main Program
 Run with default settings:
 ```commandline
 python Flocking.py
@@ -30,3 +32,11 @@ Arguments:
 -c (int)     # Set the number of cycles to run (0 for infinite)
              # int: integer value (default: 0)
 ```
+---
+### Voting Algorithms
+To run the test on the voting class, run the following:
+```commandline
+python voting.py
+```
+This will not only run a test sample on the class, it will run the algorithms in
+verbose mode.
