@@ -25,43 +25,33 @@ SIGHT = 200
 WHITE = (255, 255, 255)
 RED = (255, 0, 0)
 
-# Initialize pygame
-pygame.init()
-clock = pygame.time.Clock()
-screen = pygame.display.set_mode((SCREEN_SIZE, SCREEN_SIZE))
-pygame.font.Font('freesansbold.ttf', 18)
-pygame.display.set_caption('Flocking')
-
 
 def printData(data):
-    for key in data.keys():
-        util = 0
-        for leader in data[key]:
-            u = list(leader.values())
-            util += u[0]
-        print(str(key) + ": " + str(util))
+    util = 0
+    for leader in data:
+        u = list(leader.values())
+        util += u[0]
+    print("Utility: " + str(util))
 
 
 if __name__ == '__main__':
     # Set up some data collection
-    data = {BORDA: [],
-            PLURALITY: [],
-            VETO: []}
+    data = []
 
     # Prompt for user input
     vm = BORDA
     display = True
     cycles = 0
     agentCount = 100
+
     for i in range(len(sys.argv)):
-        print(sys.argv[i])
         if sys.argv[i] == "-h":
             print("-h: Print help (this list of commands) and exit.")
             print("-v: Set voting mechanism. b(default): borda, p: plurality, v: veto")
             sys.exit(0)
         elif sys.argv[i] == "-v":
             if sys.argv[i + 1] == 'b':
-                break
+                vm = BORDA
             if sys.argv[i + 1] == 'p':
                 vm = PLURALITY
             if sys.argv[i + 1] == 'v':
@@ -73,6 +63,13 @@ if __name__ == '__main__':
             agentsCount = int(sys.argv[i + 1])
         elif sys.argv[i] == "-c":
             cycles = int(sys.argv[i + 1])
+
+    # Initialize pygame
+    pygame.init()
+    clock = pygame.time.Clock()
+    screen = pygame.display.set_mode((SCREEN_SIZE, SCREEN_SIZE))
+    pygame.font.Font('freesansbold.ttf', 18)
+    pygame.display.set_caption('Flocking')
 
     # Set up the agents
     agents = []
@@ -89,7 +86,7 @@ if __name__ == '__main__':
         screen.fill(WHITE)
 
         squad.update(display)
-        squad.vote(vm, data, display)
+        squad.vote(vm, data)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:

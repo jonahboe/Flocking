@@ -19,4 +19,14 @@ Arguments:
              # b: Borda (default)
              # p: Plurality with elimination
              # v: Veto with elimination (of most least voted for)
+
+-d (t, f)    # Set to display output
+             # t: True (default)
+             # f: False
+             
+-a (int)     # Set the number of agents randomly generated
+             # int: integer value (default: 100)
+             
+-c (int)     # Set the number of cycles to run (0 for infinite)
+             # int: integer value (default: 0)
 ```

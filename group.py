@@ -38,7 +38,7 @@ class Group:
                                 tempy = tempy + (otherAgent.y - agent.y)
                             else:
                                 agent.leader = None
-                                print("Agent", agent.id, "has lost sight of its leader")
+                                # print("Agent", agent.id, "has lost sight of its leader")
                                 self.agents.update()  # have agents update
                                 self.agents.draw(self.screen)
                                 return
@@ -75,8 +75,8 @@ class Group:
                                 agent.orientation = agent.orientation + 360
                         else:
                             agent.orientation = tempO  # save the new orientation
-                else:
-                    print("WARNING! - Agent", agent.id, "doesn't have a leader")
+                #else:
+                    # print("WARNING! - Agent", agent.id, "doesn't have a leader")
             else:  # if the agent is the leader
                 agent.orientation = ((math.atan2(self.goaly - agent.y, self.goalx - agent.x) * 180) / math.pi)
                 distance = math.sqrt((self.goalx - agent.x) ** 2 + (self.goaly - agent.y) ** 2)
@@ -93,7 +93,7 @@ class Group:
             self.agents.draw(self.screen)
 
     # Execute voting if needed
-    def vote(self, vm, data, display):
+    def vote(self, vm, data):
         voting = Voting()
 
         # If there is an agent without a leader
@@ -104,7 +104,7 @@ class Group:
 
                 # Ask all visible neighbors to cast a vote
                 for neighbor in self.agents:
-                    if agent is not neighbor and neighbor.leaderFlag is False:
+                    if agent is not neighbor and neighbor.leaderFlag is False and neighbor.leader is None:
                         dx = abs(agent.x - neighbor.x)
                         dy = abs(agent.y - neighbor.y)
                         if math.sqrt(dx + dy) < agent.sight:
@@ -126,61 +126,21 @@ class Group:
 
                 # Find the new leader
                 leader = None
-                if display:
-                    if vm == BORDA:
-                        leader = voting.borda(agentListCopy)
-                        if leader is not None:
-                            util = self.calculateUtility(agentListCopy, leader)
-                            data[BORDA].append({leader: util})
-                    elif vm == PLURALITY:
-                        leader = voting.plurality(agentListCopy)
-                        if leader is not None:
-                            data[PLURALITY].append(leader)
-                    elif vm == VETO:
-                        leader = voting.veto(agentListCopy)
-                        if leader is not None:
-                            data[VETO].append(leader)
-
-                else:
-                    if vm == BORDA:
-                        leader = voting.plurality(copy.deepcopy(agentListCopy))
-                        if leader is not None:
-                            util = self.calculateUtility(agentListCopy, leader)
-                            data[PLURALITY].append({leader: util})
-                        leader = voting.veto(copy.deepcopy(agentListCopy))
-                        if leader is not None:
-                            util = self.calculateUtility(agentListCopy, leader)
-                            data[VETO].append({leader: util})
-                        leader = voting.borda(copy.deepcopy(agentListCopy))
-                        if leader is not None:
-                            util = self.calculateUtility(agentListCopy, leader)
-                            data[BORDA].append({leader: util})
-                    elif vm == PLURALITY:
-                        leader = voting.borda(copy.deepcopy(agentListCopy))
-                        if leader is not None:
-                            util = self.calculateUtility(agentListCopy, leader)
-                            data[BORDA].append({leader: util})
-                        leader = voting.veto(copy.deepcopy(agentListCopy))
-                        if leader is not None:
-                            util = self.calculateUtility(agentListCopy, leader)
-                            data[VETO].append({leader: util})
-                        leader = voting.plurality(copy.deepcopy(agentListCopy))
-                        if leader is not None:
-                            util = self.calculateUtility(agentListCopy, leader)
-                            data[PLURALITY].append({leader: util})
-                    elif vm == VETO:
-                        leader = voting.borda(copy.deepcopy(agentListCopy))
-                        if leader is not None:
-                            util = self.calculateUtility(agentListCopy, leader)
-                            data[BORDA].append({leader: util})
-                        leader = voting.plurality(copy.deepcopy(agentListCopy))
-                        if leader is not None:
-                            util = self.calculateUtility(agentListCopy, leader)
-                            data[PLURALITY].append({leader: util})
-                        leader = voting.veto(copy.deepcopy(agentListCopy))
-                        if leader is not None:
-                            util = self.calculateUtility(agentListCopy, leader)
-                            data[VETO].append({leader: util})
+                if vm == BORDA:
+                    leader = voting.borda(agentListCopy)
+                    if leader is not None:
+                        util = self.calculateUtility(agentListCopy, leader)
+                        data.append({leader: util})
+                elif vm == PLURALITY:
+                    leader = voting.plurality(agentListCopy)
+                    if leader is not None:
+                        util = self.calculateUtility(agentListCopy, leader)
+                        data.append({leader: util})
+                elif vm == VETO:
+                    leader = voting.veto(agentListCopy)
+                    if leader is not None:
+                        util = self.calculateUtility(agentListCopy, leader)
+                        data.append({leader: util})
 
                 # Assign the new leader
                 for a in agentList:
