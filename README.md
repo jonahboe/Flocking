@@ -20,9 +20,9 @@ Arguments:
              # p: Plurality with elimination
              # v: Veto with elimination (of most least voted for)
 
--d (t, f)    # Set to display output
-             # t: True (default)
-             # f: False
+-d (f, t)    # Set to display output
+             # f: False (default)
+             # t: True
              
 -a (int)     # Set the number of agents randomly generated
              # int: integer value (default: 100)

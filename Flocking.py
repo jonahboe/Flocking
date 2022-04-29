@@ -40,7 +40,7 @@ if __name__ == '__main__':
 
     # Prompt for user input
     vm = BORDA
-    display = True
+    display = False
     cycles = 0
     agentCount = 100
 
@@ -57,8 +57,8 @@ if __name__ == '__main__':
             if sys.argv[i + 1] == 'v':
                 vm = VETO
         elif sys.argv[i] == "-d":
-            if sys.argv[i + 1] == 'f':
-                display = False
+            if sys.argv[i + 1] == 't':
+                display = True
         elif sys.argv[i] == "-a":
             agentsCount = int(sys.argv[i + 1])
         elif sys.argv[i] == "-c":
