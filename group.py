@@ -121,6 +121,8 @@ class Group:
                             votes[n.id] = math.sqrt(dx + dy)
                     votes = dict(sorted(votes.items(), key=operator.itemgetter(1)))
                     a.votes = list(votes.keys())
+                    # We'll need these later for calculating the utility
+                    a.dists = votes
 
                 # Find the new leader
                 leader = None
@@ -128,7 +130,8 @@ class Group:
                     if vm == BORDA:
                         leader = voting.borda(agentListCopy)
                         if leader is not None:
-                            data[BORDA].append(leader)
+                            util = self.calculateUtility(agentListCopy, leader)
+                            data[BORDA].append({leader: util})
                     elif vm == PLURALITY:
                         leader = voting.plurality(agentListCopy)
                         if leader is not None:
@@ -142,33 +145,42 @@ class Group:
                     if vm == BORDA:
                         leader = voting.plurality(copy.deepcopy(agentListCopy))
                         if leader is not None:
-                            data[PLURALITY].append(leader)
+                            util = self.calculateUtility(agentListCopy, leader)
+                            data[PLURALITY].append({leader: util})
                         leader = voting.veto(copy.deepcopy(agentListCopy))
                         if leader is not None:
-                            data[VETO].append(leader)
+                            util = self.calculateUtility(agentListCopy, leader)
+                            data[VETO].append({leader: util})
                         leader = voting.borda(copy.deepcopy(agentListCopy))
                         if leader is not None:
-                            data[BORDA].append(leader)
+                            util = self.calculateUtility(agentListCopy, leader)
+                            data[BORDA].append({leader: util})
                     elif vm == PLURALITY:
                         leader = voting.borda(copy.deepcopy(agentListCopy))
                         if leader is not None:
-                            data[BORDA].append(leader)
+                            util = self.calculateUtility(agentListCopy, leader)
+                            data[BORDA].append({leader: util})
                         leader = voting.veto(copy.deepcopy(agentListCopy))
                         if leader is not None:
-                            data[VETO].append(leader)
+                            util = self.calculateUtility(agentListCopy, leader)
+                            data[VETO].append({leader: util})
                         leader = voting.plurality(copy.deepcopy(agentListCopy))
                         if leader is not None:
-                            data[PLURALITY].append(leader)
+                            util = self.calculateUtility(agentListCopy, leader)
+                            data[PLURALITY].append({leader: util})
                     elif vm == VETO:
                         leader = voting.borda(copy.deepcopy(agentListCopy))
                         if leader is not None:
-                            data[BORDA].append(leader)
+                            util = self.calculateUtility(agentListCopy, leader)
+                            data[BORDA].append({leader: util})
                         leader = voting.plurality(copy.deepcopy(agentListCopy))
                         if leader is not None:
-                            data[PLURALITY].append(leader)
+                            util = self.calculateUtility(agentListCopy, leader)
+                            data[PLURALITY].append({leader: util})
                         leader = voting.veto(copy.deepcopy(agentListCopy))
                         if leader is not None:
-                            data[VETO].append(leader)
+                            util = self.calculateUtility(agentListCopy, leader)
+                            data[VETO].append({leader: util})
 
                 # Assign the new leader
                 for a in agentList:
@@ -177,3 +189,9 @@ class Group:
                         a.leaderFlag = True
                     else:
                         a.leaderFlag = False
+
+    def calculateUtility(self, agents, leader):
+        utility = 0
+        for agent in agents:
+            utility += agent.dists.get(leader, 0)
+        return utility

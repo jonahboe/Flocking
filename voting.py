@@ -11,7 +11,7 @@ VETO = "veto"
 class Voting:
     def borda(self, agents):
         rankings = dict()
-        if len(agents[0].votes) == 0:
+        if len(agents[0].votes) <= 1:
             return None
         for agent in agents:
             points = len(agent.votes)
@@ -39,7 +39,7 @@ class Voting:
 
     def plurality(self, agents):
         rankings = dict()
-        if len(agents[0].votes) == 0:
+        if len(agents[0].votes) <= 1:
             return None
         for vote in agents[0].votes:
             rankings[vote] = 0
@@ -64,7 +64,7 @@ class Voting:
 
     def veto(self, agents):
         rankings = dict()
-        if len(agents[0].votes) == 0:
+        if len(agents[0].votes) <= 1:
             return None
         for vote in agents[0].votes:
             rankings[vote] = 0
@@ -92,6 +92,7 @@ class ag:
     def __init__(self, id, votes, x, y):
         self.id = id
         self.votes = votes
+        self.dists = None
         self.x = x
         self.y = y
 
