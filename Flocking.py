@@ -60,7 +60,7 @@ if __name__ == '__main__':
             if sys.argv[i + 1] == 't':
                 display = True
         elif sys.argv[i] == "-a":
-            agentsCount = int(sys.argv[i + 1])
+            agentCount = int(sys.argv[i + 1])
         elif sys.argv[i] == "-c":
             cycles = int(sys.argv[i + 1])
 
