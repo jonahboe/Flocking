@@ -16,7 +16,7 @@ import group
 import pygame
 from voting import *
 
-AGENT_COUNT = 20
+AGENT_COUNT = 10
 FPS = 40
 SCREEN_SIZE = 1000
 GOAL = [400, 400]
@@ -64,7 +64,10 @@ if __name__ == '__main__':
     # Set up the agents
     agents = []
     for i in range(AGENT_COUNT):
-        agents.append(agent.Agent(pg=pygame, screen=screen, id=i, leader=None, locx=(i*20+20), locy=(i*20+20), sight=SIGHT))
+        if i == 0:
+            agents.append(agent.Agent(pg=pygame, screen=screen, id=i, leader=0, leaderflag=True, locx=(i * 20 + 20), locy=(i * 20 + 20), sight=SIGHT))
+        else:
+            agents.append(agent.Agent(pg=pygame, screen=screen, id=i, leader=0, locx=(i*20+20), locy=(i*20+20), sight=SIGHT))
     squad = group.Group(pg=pygame, screen=screen, agents=agents, goalx=GOAL[0], goaly=GOAL[1], avoidance=.5, avoiddistance=10, followdistance=10, maxspeed=2, maxturnspeed=5)
 
     iteration = 0

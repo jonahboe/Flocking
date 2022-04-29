@@ -43,7 +43,3 @@ class Agent(pygame.sprite.Sprite):
         self.rect.center = (self.x, self.y)
         self.image = self.pg.transform.rotate(self.orig_image, (self.orientation * -1))
         self.rect = self.image.get_rect(center=self.rect.center)
-
-
-
-

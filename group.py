@@ -88,7 +88,7 @@ class Group:
                     self.goaly = random.randint(0, 1000)
 
         for agent in self.agents:
-            agent.update(display)  # have agents update
+            agent.update()  # have agents update
         if display:
             self.agents.draw(self.screen)
 
@@ -127,30 +127,48 @@ class Group:
                 if display:
                     if vm == BORDA:
                         leader = voting.borda(agentListCopy)
-                        data[BORDA].append(leader)
+                        if leader is not None:
+                            data[BORDA].append(leader)
                     elif vm == PLURALITY:
                         leader = voting.plurality(agentListCopy)
-                        data[PLURALITY].append(leader)
+                        if leader is not None:
+                            data[PLURALITY].append(leader)
                     elif vm == VETO:
                         leader = voting.veto(agentListCopy)
-                        data[VETO].append(leader)
+                        if leader is not None:
+                            data[VETO].append(leader)
 
                 else:
                     if vm == BORDA:
-                        leader = voting.borda(copy.deepcopy(agentListCopy))
-                        data[BORDA].append(leader)
-                        data[PLURALITY].append(voting.plurality(copy.deepcopy(agentListCopy)))
-                        data[VETO].append(voting.veto(copy.deepcopy(agentListCopy)))
-                    elif vm == PLURALITY:
                         leader = voting.plurality(copy.deepcopy(agentListCopy))
-                        data[BORDA].append(voting.borda(copy.deepcopy(agentListCopy)))
-                        data[PLURALITY].append(leader)
-                        data[VETO].append(voting.veto(copy.deepcopy(agentListCopy)))
-                    elif vm == VETO:
+                        if leader is not None:
+                            data[PLURALITY].append(leader)
                         leader = voting.veto(copy.deepcopy(agentListCopy))
-                        data[BORDA].append(voting.borda(copy.deepcopy(agentListCopy)))
-                        data[PLURALITY].append(voting.plurality(copy.deepcopy(agentListCopy)))
-                        data[VETO].append(leader)
+                        if leader is not None:
+                            data[VETO].append(leader)
+                        leader = voting.borda(copy.deepcopy(agentListCopy))
+                        if leader is not None:
+                            data[BORDA].append(leader)
+                    elif vm == PLURALITY:
+                        leader = voting.borda(copy.deepcopy(agentListCopy))
+                        if leader is not None:
+                            data[BORDA].append(leader)
+                        leader = voting.veto(copy.deepcopy(agentListCopy))
+                        if leader is not None:
+                            data[VETO].append(leader)
+                        leader = voting.plurality(copy.deepcopy(agentListCopy))
+                        if leader is not None:
+                            data[PLURALITY].append(leader)
+                    elif vm == VETO:
+                        leader = voting.borda(copy.deepcopy(agentListCopy))
+                        if leader is not None:
+                            data[BORDA].append(leader)
+                        leader = voting.plurality(copy.deepcopy(agentListCopy))
+                        if leader is not None:
+                            data[PLURALITY].append(leader)
+                        leader = voting.veto(copy.deepcopy(agentListCopy))
+                        if leader is not None:
+                            data[VETO].append(leader)
 
                 # Assign the new leader
                 for a in agentList:
